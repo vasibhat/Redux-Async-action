@@ -1,5 +1,7 @@
 const redux=require('redux')
 const createStore=redux.createStore
+const applyMiddleware =redux.applyMiddleware 
+const thunkMiddleware =require('redux-thunk').default
 
 const initialState ={
     loading:false,
@@ -59,4 +61,22 @@ const reducer= (state =initialState,action) => {
             }
 }}
 
-const store =createStore(reducer)
+const fetchUsers =() =>{
+    return function(dispatch){
+        dispatch(fetchUsersRequest())
+        axios.get("")
+        .then(response =>{
+            const users =response.data.map(user=>user.id)
+            dispatch(fetchUsersSuccess(users))
+        })
+        .catch(error =>{
+            dispatch(fetchUsersFailure(error.message))
+        })
+    }
+}
+
+const store =createStore(reducer,applyMIddleware(thunkMiddleware))
+store.subscribe(()=>{
+    console.log(sstore.getState())
+})
+store.dispatch(fetchUser())
